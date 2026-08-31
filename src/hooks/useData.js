@@ -21,6 +21,7 @@ export function useData() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'field_schedules' }, reload)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'territory_work_history' }, reload)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'territory_stops' }, reload)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'territory_roads' }, reload)
       .subscribe()
     return () => { supabase.removeChannel(channel) }
   }, [reload])

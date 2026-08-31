@@ -16,14 +16,14 @@ import { updateRow } from './services/data'
 
 export default function App(){
  const [publicAccess,setPublicAccess]=useState(localStorage.getItem('oeste_access')==='1')
- const [page,setPage]=useState('home'),[admin,setAdmin]=useState(false),[showAdminLogin,setShowAdminLogin]=useState(false),[selectedTerritory,setSelectedTerritory]=useState(null),[toast,setToast]=useState(null)
+ const [page,setPage]=useState('home'),[admin,setAdmin]=useState(false),[showAdminLogin,setShowAdminLogin]=useState(false),[selectedTerritory,setSelectedTerritory]=useState(null),[toast,setToast]=useState(null),[adminJustSignedIn,setAdminJustSignedIn]=useState(false)
  const data=useData();const auth=useAuth()
  useEffect(()=>{if(toast){const t=setTimeout(()=>setToast(null),3500);return()=>clearTimeout(t)}},[toast])
- useEffect(()=>{if(auth.isAdmin){setPublicAccess(true);setAdmin(true);setShowAdminLogin(false)}},[auth.isAdmin])
- const logout=async()=>{if(supabase)await auth.signOut();localStorage.removeItem('oeste_access');setPublicAccess(false);setAdmin(false);setPage('home')}
+ useEffect(()=>{if(auth.isAdmin){setPublicAccess(true);setShowAdminLogin(false);if(adminJustSignedIn)setAdmin(true)}},[auth.isAdmin,adminJustSignedIn])
+ const logout=async()=>{if(supabase)await auth.signOut();localStorage.removeItem('oeste_access');setPublicAccess(false);setAdmin(false);setAdminJustSignedIn(false);setPage('home')}
  const publicLogin=()=>{localStorage.setItem('oeste_access','1');setPublicAccess(true)}
- if(!publicAccess) return <><Login onPublicLogin={publicLogin} onAdminLogin={auth.signIn}/></>
- if(showAdminLogin&&!auth.isAdmin) return <><Login adminOnly onBack={()=>setShowAdminLogin(false)} onPublicLogin={publicLogin} onAdminLogin={auth.signIn}/></>
+ if(!publicAccess) return <><Login onPublicLogin={publicLogin} onAdminLogin={async (...args)=>{const r=await auth.signIn(...args);if(!r?.error)setAdminJustSignedIn(true);return r}}/></>
+ if(showAdminLogin&&!auth.isAdmin) return <><Login adminOnly onBack={()=>setShowAdminLogin(false)} onPublicLogin={publicLogin} onAdminLogin={async (...args)=>{const r=await auth.signIn(...args);if(!r?.error)setAdminJustSignedIn(true);return r}}/></>
  if(data.loading && !data.territories.length) return <div className="loading-screen"><div className="spinner"/><b>Carregando territórios…</b>{!supabaseConfigured&&<span>Configure o arquivo .env para conectar ao Supabase.</span>}</div>
  if(admin&&auth.isAdmin) return <><Admin data={data} reload={data.reload} setToast={setToast} onBack={()=>setAdmin(false)} onOpenMap={(id)=>{setSelectedTerritory(id);setAdmin(false);setPage('map')}}/><Toast toast={toast}/></>
  const savePolygon=async(id,polygon)=>{try{await updateRow('territories',id,{polygon});setToast({message:'Área do território atualizada.'});data.reload()}catch(e){setToast({type:'error',message:e.message})}}

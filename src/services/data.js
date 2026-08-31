@@ -9,7 +9,7 @@ export async function fetchAllData() {
   const [territories, groups, members, locations, schedules, history, stops, roads] = await Promise.all([
     supabase.from(tables.territories).select('*').order('name'),
     supabase.from(tables.groups).select('*').order('name'),
-    supabase.from(tables.members).select('*').order('full_name'),
+    supabase.from(tables.members).select('*').order('name'),
     supabase.from(tables.locations).select('*').order('name'),
     supabase.from(tables.schedules).select('*').order('service_date').order('start_time'),
     supabase.from(tables.history).select('*').order('worked_at', { ascending: false }),

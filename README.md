@@ -8,7 +8,7 @@ Aplicativo mobile-first para organização de territórios de pregação, progra
 - Supabase (Postgres, Auth e Realtime)
 - Leaflet + OpenStreetMap
 - Lucide Icons
-- html-to-image para gerar PNG
+- Canvas nativo do navegador para gerar PNG sem depender de renderização HTML
 
 ## 1. Supabase — banco de dados
 
@@ -90,7 +90,9 @@ Ela não é uma autenticação de produção. O acesso administrativo é separad
 - Criar/editar/excluir membros e definir dirigentes
 - Criar/editar/excluir locais de saída
 - Criar/editar/excluir programação
-- Gerar imagem PNG da programação
+- Cadastro de ruas vinculadas a cada território
+- Seleção automática de ruas ao escolher o território na programação
+- Gerar imagem PNG profissional com 6 a 10 saídas de campo
 - Atualizações em tempo real via Supabase Realtime
 
 ## 5. Programação semanal
@@ -114,7 +116,7 @@ O administrador seleciona um território, abre o mapa e usa **Desenhar territór
 
 ## 8. PNG
 
-Em **Campo → Gerar PNG** ou **Painel Administrativo → Imagens / relatórios**, o sistema cria uma imagem com dia, data, horário, local, dirigente, território, rua e faixa de números quando disponíveis.
+Em **Painel Administrativo → Imagens / relatórios**, escolha de 6 a 10 saídas. A geração fica bloqueada com menos de 6. O PNG inclui dia, horário, local de saída, dirigente, território, rua, números inicial/final e período da programação. A geração usa Canvas nativo para evitar o problema de imagem vazia.
 
 ## 9. Realtime
 

@@ -32,7 +32,7 @@ export function Home({ data, setPage }) {
     })
     .slice(0, 4)
 
-  const leaders = new Map(members.map((x) => [x.id, x.full_name]))
+  const leaders = new Map(members.map((x) => [x.id, x.name||x.full_name||'Sem nome']))
   const locs = new Map(locations.map((x) => [x.id, x.name]))
   const terrs = new Map(territories.map((x) => [x.id, x.name]))
 
